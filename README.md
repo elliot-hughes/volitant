@@ -4,7 +4,7 @@ Volitant is a Python package that converts and modifies configuration files for 
 ## Installation
 Go to a working directory of your choice and download the code with
 ```
-git clonehttps://github.com/elliot-hughes/volitant.git
+git clone https://github.com/elliot-hughes/volitant.git
 ```
 If this complains with something like `error: SSL certificate problem, verify that the CA cert is OK.`, you can set `git config --global http.sslVerify false` to ignore it.
 
