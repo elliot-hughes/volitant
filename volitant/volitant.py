@@ -12,6 +12,7 @@ import collections
 from xml.dom import minidom		# I would prefer to use "xml.etree.ElementTree", but that's implemented in Python 2.5.
 from xml.dom.ext import PrettyPrint
 from StringIO import StringIO
+import random
 # /IMPORTS
 
 # CLASSES:
@@ -32,6 +33,23 @@ class brick:
 			setattr(self, key.lower(), value)
 		self.data = self.get_data()
 	
+	def update(self):
+		doc = minidom.Document()
+		de_brick = doc.createElement("CFGBrick")
+		doc.appendChild(de_brick)
+		for param, value in self.params.items():
+			de_parameter = doc.createElement("Parameter")
+			de_parameter.setAttribute("name", param)
+			de_parameter.setAttribute("type", "string")
+			de_brick.appendChild(de_parameter)
+			contents = doc.createTextNode(value)
+			de_parameter.appendChild(contents)
+		for datum in self.data:
+			datum.update()
+			de_brick.appendChild(datum.dom_element)
+		self.dom_element = de_brick
+		return True
+	
 	def Print(self):
 		stream = StringIO()
 		PrettyPrint(self.dom_element, stream=stream, encoding='utf-8')
@@ -42,6 +60,17 @@ class brick:
 	
 	def write(self, out="test.txt"):
 		return write_bricks([self], out=out)
+	
+	def set_value(self, v):
+		for datum in self.data:
+			datum.set_value(str(v))
+		return self.update()
+	
+	def randomize_data(self, possible_values):
+		for datum in self.data:
+			datum.randomize(possible_values)
+		self.update()
+		return True
 
 
 class data:
@@ -51,6 +80,42 @@ class data:
 			setattr(self, attr, value)
 		self.value = dom_element.firstChild.nodeValue
 		self.values = self.value.split()
+		self.elements = int(dom_element.attributes["elements"].value)
+		self.qie = dom_element.attributes["qie"].value
+		self.card = dom_element.attributes["card"].value
+		self.encoding = dom_element.attributes["encoding"].value
+	
+	def Print(self):
+		stream = StringIO()
+		PrettyPrint(self.dom_element, stream=stream, encoding='utf-8')
+		print stream.getvalue().strip()
+	
+	def set_value(self, v):
+		self.value = str(v)
+		self.values = self.value.split()
+		return self.update()
+	
+	def randomize(self, possible_values=range(50)):
+		if self.elements != 1:
+			print "ERROR: Not implemented, yet."
+			return False
+		
+		self.values = [str(random.choice(possible_values)) for i in range(self.elements)]
+		self.value = "\t".join(self.values)
+		self.update()
+		return self.values
+	
+	def update(self):
+		doc = minidom.Document()
+		de_datum = doc.createElement("Data")
+		de_datum.setAttribute("elements", str(self.elements))
+		de_datum.setAttribute("encoding", self.encoding)
+		de_datum.setAttribute("card", self.card)
+		de_datum.setAttribute("qie", self.qie)
+		contents = doc.createTextNode("\t".join(self.values))
+		de_datum.appendChild(contents)
+		self.dom_element = de_datum
+		return True
 # :CLASSES
 
 # FUNCTIONS:
