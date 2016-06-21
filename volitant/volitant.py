@@ -137,8 +137,14 @@ def write_bricks(bricks, out="test.txt"):
 	# Given a list of brick objects, write them to a file named "out". The supplied file extension tells the code what to do.
 	ext = out.split(".")[-1]
 	if ext == "txt":
+		# Set up output file:
 		output = open(out, "w")
 		writer = csv.writer(output, delimiter="\t")
+		
+		# Write a header line to the output file:
+		writer.writerow(["#INFOTYPE", "CREATIONTAG", "CREATIONSTAMP", "RBX", "CARD", "QIE", "VALUE(S)"])
+		
+		# Write each data line of each brick as a line in the output file:
 		for b in bricks:
 			for datum in b.data:
 				row = [b.infotype, b.creationtag, b.creationstamp, b.rbx, datum.card, datum.qie]
@@ -204,6 +210,11 @@ def read_bricks(in_file):
 		order = []		# This is a KLUDGE because ordereddicts don't work with this Python version.
 		info = {}
 		for row in reader:
+			# Allow lines beginning with "#" to be treated as comments:
+			if row[0].strip()[0] == "#":
+				continue
+			
+			# Parse data lines:
 			params = (row[3], row[0], row[1], row[2])
 			if params not in info:
 				order.append(params)
