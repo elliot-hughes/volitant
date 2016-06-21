@@ -65,6 +65,11 @@ class brick:
 		for datum in self.data:
 			datum.set_value(str(v))
 		return self.update()
+
+	def set_parameter(self, parameter, tag_name):
+		self.params[parameter] = tag_name
+		return self.update()
+		
 	
 	def randomize_data(self, possible_values):
 		for datum in self.data:
