@@ -34,6 +34,8 @@ class brick:
 		self.data = self.get_data()
 	
 	def update(self):
+		self.params["INFOTYPE"] = self.params["INFOTYPE"].upper()
+		
 		doc = minidom.Document()
 		de_brick = doc.createElement("CFGBrick")
 		doc.appendChild(de_brick)
@@ -101,23 +103,26 @@ class data:
 		return self.update()
 	
 	def randomize(self, possible_values=range(50)):
-		if self.elements != 1:
-			print "ERROR: Not implemented, yet."
-			return False
+#		if self.elements != 1:
+#			print "ERROR: Not implemented, yet."
+#			return False
 		
-		self.values = [str(random.choice(possible_values)) for i in range(self.elements)]
+#		self.values = [str(random.choice(possible_values)) for i in range(self.elements)]
+		self.values = [str(random.choice(possible_values))]
 		self.value = "\t".join(self.values)
 		self.update()
 		return self.values
 	
 	def update(self):
+		self.elements = len(self.values)
+		
 		doc = minidom.Document()
 		de_datum = doc.createElement("Data")
 		de_datum.setAttribute("elements", str(self.elements))
 		de_datum.setAttribute("encoding", self.encoding)
 		de_datum.setAttribute("card", self.card)
 		de_datum.setAttribute("qie", self.qie)
-		contents = doc.createTextNode("\t".join(self.values))
+		contents = doc.createTextNode(" ".join(self.values))
 		de_datum.appendChild(contents)
 		self.dom_element = de_datum
 		return True
@@ -233,5 +238,5 @@ def print_summary(in_file):
 	print ext.upper() + " file: " + in_file
 	print str(len(bricks)) + " brick(s):"
 	for i, b in enumerate(bricks):
-		print  "\t" + str(i) + ": " + str(b.params) + " (" + str(len(b.data)) + " data)"
+		print  "\t" + str(i) + ": " + str(b.params) + " (" + str(len(b.data)) + " data lines)"
 # :FUNCTIONS

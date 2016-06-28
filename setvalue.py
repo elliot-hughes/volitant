@@ -17,20 +17,33 @@ from volitant.volitant import *
 
 # FUNCTIONS:
 def main():
+	# Arguments:
 	in_file = sys.argv[1]
-	v = sys.argv[2]
+	
+	value = sys.argv[2]
+	
 	out_file = in_file
 	if len(sys.argv) > 3:
 		out_file = sys.argv[3]
+	
+	creation_tag = None
 	if len(sys.argv) > 4:
-		tag = sys.argv[4]
-	else:
-		tag = None
+		creation_tag = sys.argv[4]
+	
+	info_type = None
+	if len(sys.argv) > 5:
+		info_type = sys.argv[5]
+	
+	# Read in bricks and change values:
 	bricks = read_bricks(in_file)
 	for b in bricks:
-		b.set_value(v)
-		if tag:
-			b.set_parameter("CREATIONTAG", tag)
+		b.set_value(value)
+		if creation_tag:
+			b.set_parameter("CREATIONTAG", creation_tag)
+		if info_type:
+			b.set_parameter("INFOTYPE", info_type)
+	
+	# Write bricks:
 	return write_bricks(bricks, out=out_file)
 # :FUNCTIONS
 

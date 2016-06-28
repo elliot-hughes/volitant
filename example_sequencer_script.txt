@@ -1,0 +1,26 @@
+#ngccm server commands
+#      Script format:
+#    '#' introduces a comment
+#    [tag-for-step] : [events] [(optional extended tag for parsing purposes)]
+#        Sequence of lines for ngCCM server
+#    [tag-for-step] : [events] [(optional extended tag for parsing purposes)]
+#        Sequence of lines for ngCCM server
+#    
+#    Lines for the ngCCM server start with whitespace
+#     In these lines, ${RBX} will be replaced by the RBX name(s)
+#     A line can be of the form:
+#        dbload [item type] [database accessor] [database tag]
+
+#    Lines which start a new step contain a colon and do not start with white space.
+#     if the events is not specified, the default value from the sequencer will be used.
+#     If the extended tag is provided, it must be put within parenthesis.
+ped_0x26 : 1000
+  put ${RBX}-${QIESLOT}-QIE[1-24]_PedestalDAC 24*0x26
+dbped_0x30: 1000
+  dbload Pedestal xmlfile://nfshome0/elhughes/ngrbx/sequencer/pedestalAll30.xml pedestal_30
+#  put ${RBX}-${QIESLOT}-QIE[1-24]_PedestalDAC 24*0x30
+dbped_0x34  : 1000
+  dbload Pedestal xmlfile://nfshome0/elhughes/ngrbx/sequencer/pedestalAll34.xml pedestal_34
+#  put ${RBX}-${QIESLOT}-QIE[1-24]_PedestalDAC 24*0x36
+bob  : 1000
+  put ${RBX}-${QIESLOT}-QIE[1-24]_PedestalDAC 24*0x3F
