@@ -22,10 +22,15 @@ def main():
 	out_file = in_file
 	if len(sys.argv) > 3:
 		out_file = sys.argv[3]
+	if len(sys.argv) > 4:
+		tag = sys.argv[4]
+	else:
+		tag = None
 	bricks = read_bricks(in_file)
 	for b in bricks:
 		b.set_value(v)
-		b.set_parameter(parameter,v)
+		if tag:
+			b.set_parameter("CREATIONTAG", tag)
 	return write_bricks(bricks, out=out_file)
 # :FUNCTIONS
 
