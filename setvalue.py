@@ -18,18 +18,23 @@ from volitant.volitant import *
 # FUNCTIONS:
 def main():
 	# Arguments:
+	## 1: input file
 	in_file = sys.argv[1]
 	
+	## 2: input value
 	value = sys.argv[2]
 	
+	## 3 (optional): output file
 	out_file = in_file
 	if len(sys.argv) > 3:
 		out_file = sys.argv[3]
 	
+	## 4 (optional): creation tag
 	creation_tag = None
 	if len(sys.argv) > 4:
 		creation_tag = sys.argv[4]
 	
+	## 5 (optional): info type
 	info_type = None
 	if len(sys.argv) > 5:
 		info_type = sys.argv[5]
