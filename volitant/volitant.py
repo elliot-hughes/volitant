@@ -89,7 +89,14 @@ class data:
 		self.values = self.value.split()
 		self.elements = int(dom_element.attributes["elements"].value)
 		self.qie = dom_element.attributes["qie"].value
-		self.card = dom_element.attributes["card"].value
+		try:
+			self.card = dom_element.attributes["card"].value
+		except:
+			self.card = None
+		try:
+			self.rm = dom_element.attributes["rm"].value
+		except:
+			self.rm = None
 		self.encoding = dom_element.attributes["encoding"].value
 	
 	def Print(self):
@@ -120,7 +127,10 @@ class data:
 		de_datum = doc.createElement("Data")
 		de_datum.setAttribute("elements", str(self.elements))
 		de_datum.setAttribute("encoding", self.encoding)
-		de_datum.setAttribute("card", self.card)
+		if self.card != None:
+			de_datum.setAttribute("card", self.card)
+		if self.rm != None:
+			de_datum.setAttribute("rm", self.rm)
 		de_datum.setAttribute("qie", self.qie)
 		contents = doc.createTextNode(" ".join(self.values))
 		de_datum.appendChild(contents)
@@ -147,12 +157,12 @@ def write_bricks(bricks, out="test.txt"):
 		writer = csv.writer(output, delimiter="\t")
 		
 		# Write a header line to the output file:
-		writer.writerow(["#INFOTYPE", "CREATIONTAG", "CREATIONSTAMP", "RBX", "CARD", "QIE", "VALUE(S)"])
+		writer.writerow(["#INFOTYPE", "CREATIONTAG", "CREATIONSTAMP", "RBX", "RM", "CARD", "QIE", "VALUE(S)"])
 		
 		# Write each data line of each brick as a line in the output file:
 		for b in bricks:
 			for datum in b.data:
-				row = [b.infotype, b.creationtag, b.creationstamp, b.rbx, datum.card, datum.qie]
+				row = [b.infotype, b.creationtag, b.creationstamp, b.rbx, datum.rm, datum.card, datum.qie]
 				row += datum.values
 				writer.writerow(row)
 		output.close()
@@ -191,12 +201,17 @@ def create_brick(params, data):
 		de_parameter.appendChild(contents)
 	for datum in data:
 		de_datum = doc.createElement("Data")
-		de_datum.setAttribute("elements", str(len(datum[2])))
+		de_datum.setAttribute("elements", str(len(datum[3])))
 		de_datum.setAttribute("encoding", "dec")
-		de_datum.setAttribute("card", datum[0])
-		de_datum.setAttribute("qie", datum[1])
+		de_datum.setAttribute("card", None)
+		if datum[0] != "None":
+			de_datum.setAttribute("rm", datum[0])
+		de_datum.setAttribute("card", None)
+		if datum[1] != "None":
+			de_datum.setAttribute("card", datum[1])
+		de_datum.setAttribute("qie", datum[2])
 		de_brick.appendChild(de_datum)
-		contents = doc.createTextNode(" ".join(datum[2]))
+		contents = doc.createTextNode(" ".join(datum[3]))
 		de_datum.appendChild(contents)
 	
 	return brick(de_brick)
@@ -224,7 +239,7 @@ def read_bricks(in_file):
 			if params not in info:
 				order.append(params)
 				info[params] = []
-			info[params].append(row[4:6]+[row[6:]])
+			info[params].append(row[4:7]+[row[7:]])
 		bricks = []
 		for key in order:
 			bricks.append(create_brick(key, info[key]))
